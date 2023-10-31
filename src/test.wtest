@@ -1,0 +1,108 @@
+import Oleada.*
+import Campeon.*
+import Items.*
+import Batalla.*
+
+describe "test etapa 1"{
+	const campeon1 = new Campeon(puntosDeVida = 20, puntosDeAtaque = 10, unidadesBloqueo = 0)
+	const doran = new Doran(peso = 200)
+	const oleada = new Oleada(plus = 5, cantidadMinions = 35)
+	const tomo = new TomoAmplificador(peso = 1000)
+	const sombrero = new Rabadon(peso = 200)
+	
+	method initialize(){
+		campeon1.comprarItem(doran)
+		campeon1.comprarItem(tomo)
+	}
+	
+	test "la vida del campeon es de 140"{
+		campeon1.puntosDeVidaConItems()
+		assert.equals(140, campeon1.puntosDeVida())
+	}
+	test"los puntos de ataque son 40"{
+		campeon1.puntosDeAtaqueConItems()
+		assert.equals(40, campeon1.puntosDeAtaque())
+	}
+	test"el campeon tiene una batalla, y su puntos de danio acumulado pasa a 40"{
+		campeon1.recibirAtaque(oleada)
+		assert.equals(40,campeon1.danioAcumulado())
+	}
+	test "los puntos de vida pasan a 150"{
+		campeon1.recibirAtaque(oleada)
+		campeon1.puntosDeVidaConItems()
+		assert.equals(150, campeon1.puntosDeVida())
+	}
+	test"los puntos de ataque pasan a 44"{
+		campeon1.recibirAtaque(oleada)
+		campeon1.puntosDeAtaqueConItems()
+		assert.equals(44, campeon1.puntosDeAtaque())
+	}
+	test"el sombrero aporta 180 puntos mas de vida"{
+		campeon1.comprarItem(sombrero)
+		campeon1.puntosDeVidaConItems()
+		assert.equals(180, campeon1.puntosDeVida())
+	}
+	test"de ataque aporta 16 mas"{
+		campeon1.comprarItem(sombrero)
+		campeon1.recibirAtaque(oleada)
+		campeon1.puntosDeAtaqueConItems()
+		assert.equals(60, campeon1.puntosDeAtaque())		
+	}
+	test"total de vida es de 190"{
+		campeon1.recibirAtaque(oleada)
+		campeon1.comprarItem(sombrero)
+		campeon1.puntosDeVidaConItems()
+		assert.equals(190, campeon1.puntosDeVida())
+	}
+	test"total de daño es de 60"{
+		campeon1.comprarItem(sombrero)
+		campeon1.recibirAtaque(oleada)
+		campeon1.puntosDeAtaqueConItems()
+		assert.equals(60, campeon1.puntosDeAtaque())
+	}
+}
+
+describe "test etapa 2"{
+	const campeon1 = new Campeon(puntosDeVida = 20, puntosDeAtaque = 10, unidadesBloqueo = 2)
+	const campeon2 = new Campeon(puntosDeVida = 20, puntosDeAtaque = 10, unidadesBloqueo = 0)
+	const doran = new Doran(peso = 200)
+	const oleada = new Oleada(plus = 5, cantidadMinions = 40)
+	const tomo = new TomoAmplificador(peso = 1000)
+	const sombrero = new Rabadon(peso = 200)
+	
+	method initialize(){
+		campeon1.comprarItem(doran)
+		campeon1.comprarItem(tomo)
+		campeon1.comprarItem(sombrero)
+		campeon1.recibirAtaque(oleada)
+		campeon1.puntosDeVidaConItems()
+	}
+	test" el campeon no pierde vida al recibir un ataque" {
+		assert.equals(45, campeon1.danioAcumulado())
+	}
+	test"su bloqueos bajan a 1"{
+		campeon1.realizarBloqueo()
+		assert.equals(1, campeon1.cantidadDeBloqueos())
+	}
+	test"el campeon 2 al recibir ataque muere"{
+		campeon1.recibirAtaque(oleada)
+		assert.throwsException({campeon2.recibirAtaque(oleada)})
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
